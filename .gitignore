@@ -1,0 +1,4 @@
+**/build/
+**/pgdata/
+**/.env*
+!**/.env.example
