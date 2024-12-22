@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"github.com/foss-opensolace/api.opensolace.com/internal/app"
+	"github.com/foss-opensolace/api.opensolace.com/internal/config"
+)
 
 func main() {
-	fmt.Println("Hello, world!")
+	config.New()
+	app.New()
 }
