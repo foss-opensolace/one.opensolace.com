@@ -21,6 +21,8 @@ func New() {
 	if err := migrate(db); err != nil {
 		panic(err)
 	}
+
+	Postgres = db
 }
 
 func migrate(db *gorm.DB) error {
