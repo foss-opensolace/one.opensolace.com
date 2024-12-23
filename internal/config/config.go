@@ -19,6 +19,10 @@ func New() {
 	if err := loadDB(); err != nil {
 		panic(err)
 	}
+
+	if err := loadSecurity(); err != nil {
+		panic(err)
+	}
 }
 
 func read(file string) []byte {
