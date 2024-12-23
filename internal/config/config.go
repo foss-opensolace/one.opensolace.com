@@ -15,6 +15,10 @@ func New() {
 	if err := loadRouter(); err != nil {
 		panic(err)
 	}
+
+	if err := loadDB(); err != nil {
+		panic(err)
+	}
 }
 
 func read(file string) []byte {
