@@ -18,48 +18,30 @@ func (pe ParamError) Error() string {
 
 func toParamError(fe validator.FieldError) ParamError {
 	field := fe.Field()
+	var msg string
 
 	switch fe.Tag() {
 	case "required":
-		return ParamError{
-			Param:   field,
-			Message: "Is empty, but is required",
-		}
+		msg = "Is empty, but is required"
 	case "eqfield":
-		return ParamError{
-			Param:   field,
-			Message: fmt.Sprintf("Doesn't match %s", fe.Param()),
-		}
+		msg = fmt.Sprintf("Doesn't match %s", fe.Param())
 	case "min":
-		return ParamError{
-			Param:   field,
-			Message: fmt.Sprintf("%s characters minimum", fe.Param()),
-		}
+		msg = fmt.Sprintf("%s characters minimum", fe.Param())
 	case "max":
-		return ParamError{
-			Param:   field,
-			Message: fmt.Sprintf("%s characters maximum", fe.Param()),
-		}
+		msg = fmt.Sprintf("%s characters maximum", fe.Param())
 	case "username":
-		return ParamError{
-			Param:   field,
-			Message: "Usernames must be composed of lowercase alphanumerical characters",
-		}
+		msg = "Usernames must be composed of lowercase alphanumerical characters"
 	case "email":
-		return ParamError{
-			Param:   field,
-			Message: "Incorrect email format",
-		}
+		msg = "Incorrect email format"
 	case "password":
-		return ParamError{
-			Param:   field,
-			Message: "Password must contain at least 6 digits and cannot exceed 72 bytes. Reduce the length or avoid characters like emojis.",
-		}
+		msg = "Password must contain at least 6 digits and cannot exceed 72 bytes. Reduce the length or avoid characters like emojis."
 	default:
-		return ParamError{
-			Param:   field,
-			Message: fe.Error(),
-		}
+		msg = fe.Error()
+	}
+
+	return ParamError{
+		Param:   field,
+		Message: msg,
 	}
 }
 
