@@ -22,4 +22,5 @@ func (c *controller) v1() {
 
 	v1.NewMetricRouter(group)
 	v1.NewAuthRouter(group)
+	v1.NewUserRouter(group)
 }
