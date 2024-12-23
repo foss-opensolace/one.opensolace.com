@@ -1,8 +1,10 @@
 package middleware
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/bytedance/sonic"
@@ -21,15 +23,15 @@ func Interceptor() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		err := c.Next()
 
-		code := c.Response().StatusCode()
 		originalBody := c.Response().Body()
 		requestID := c.GetRespHeader(fiber.HeaderXRequestID)
 
 		response := Response{
 			RequestID: requestID,
 			Time:      time.Now().Format(time.RFC3339),
-			Status:    code,
 		}
+
+		response.Status = c.Response().StatusCode()
 
 		var parsedData interface{}
 		if err := sonic.Unmarshal(originalBody, &parsedData); err == nil {
@@ -52,7 +54,7 @@ func Interceptor() fiber.Handler {
 			}
 		}
 
-		if code > 399 {
+		if response.Status > 399 {
 			response.Exception = response.Data
 			response.Data = nil
 		}
@@ -61,16 +63,24 @@ func Interceptor() fiber.Handler {
 			response.Exception = err.Error()
 
 			if e, ok := err.(*fiber.Error); ok {
-				code = e.Code
-				c.Status(e.Code)
+				if errors.Is(err, fiber.ErrUnprocessableEntity) {
+					response.Exception = "No body found when expected"
+				}
+
+				response.Status = e.Code
 			} else {
-				c.Status(fiber.StatusInternalServerError)
+				if strings.Contains(err.Error(), "input json is empty") {
+					response.Exception = "No body found when expected"
+
+					response.Status = fiber.StatusUnprocessableEntity
+				} else {
+					response.Status = fiber.StatusInternalServerError
+				}
 			}
 		}
 
 		c.Locals("err", response.Exception)
-
-		response.Status = code
+		c.Status(response.Status)
 
 		return c.JSON(response)
 	}
