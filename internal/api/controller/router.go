@@ -21,4 +21,5 @@ func (c *controller) v1() {
 	group := c.instance.Group("/v1")
 
 	v1.NewMetricRouter(group)
+	v1.NewAuthRouter(group)
 }
