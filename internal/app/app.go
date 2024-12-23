@@ -7,8 +7,8 @@ import (
 	"syscall"
 
 	"github.com/bytedance/sonic"
+	"github.com/foss-opensolace/api.opensolace.com/internal/api/controller"
 	"github.com/foss-opensolace/api.opensolace.com/internal/config"
-	"github.com/foss-opensolace/api.opensolace.com/internal/controller"
 	"github.com/foss-opensolace/api.opensolace.com/pkg/middleware"
 	"github.com/gofiber/fiber/v2"
 )
