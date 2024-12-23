@@ -13,6 +13,10 @@ type userRepository struct {
 
 type UserRepository interface {
 	Create(obj *dto.UserRegister) (*model.User, error)
+
+	GetById(id uint) (*model.User, error)
+	GetByUsername(username string) (*model.User, error)
+	GetByLoginAndPassword(login, password string) (*model.User, error)
 }
 
 func NewUserRepository(postgres *gorm.DB) UserRepository {
@@ -56,4 +60,35 @@ func (u userRepository) Create(obj *dto.UserRegister) (*model.User, error) {
 	}
 
 	return &newUser, nil
+}
+
+func (u userRepository) GetById(id uint) (*model.User, error) {
+	var user *model.User
+	if err := u.db.First(&user, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (u userRepository) GetByUsername(username string) (*model.User, error) {
+	var user *model.User
+	if err := u.db.First(&user, "username = ?", username).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (u userRepository) GetByLoginAndPassword(login string, password string) (*model.User, error) {
+	var user *model.User
+	if err := u.db.First(&user, "username = ? OR email = ?", login, login).Error; err != nil {
+		return nil, err
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
