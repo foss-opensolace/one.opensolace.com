@@ -2,15 +2,14 @@ package validate
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/hashicorp/go-multierror"
 )
 
 type ParamError struct {
-	Param   string
-	Message string
+	Param   string `json:"param"`
+	Message string `json:"message"`
 }
 
 func (pe ParamError) Error() string {
@@ -18,13 +17,38 @@ func (pe ParamError) Error() string {
 }
 
 func toParamError(fe validator.FieldError) ParamError {
-	field := strings.ToLower(fe.Field())
+	field := fe.Field()
 
 	switch fe.Tag() {
+	case "required":
+		return ParamError{
+			Param:   field,
+			Message: "Is empty, but is required",
+		}
+	case "eqfield":
+		return ParamError{
+			Param:   field,
+			Message: fmt.Sprintf("Doesn't match %s", fe.Param()),
+		}
+	case "min":
+		return ParamError{
+			Param:   field,
+			Message: fmt.Sprintf("%s characters minimum", fe.Param()),
+		}
+	case "max":
+		return ParamError{
+			Param:   field,
+			Message: fmt.Sprintf("%s characters maximum", fe.Param()),
+		}
 	case "username":
 		return ParamError{
 			Param:   field,
 			Message: "Usernames must be composed of lowercase alphanumerical characters",
+		}
+	case "email":
+		return ParamError{
+			Param:   field,
+			Message: "Incorrect email format",
 		}
 	case "password":
 		return ParamError{
@@ -41,10 +65,6 @@ func toParamError(fe validator.FieldError) ParamError {
 
 func getStructErrors(s any) validator.ValidationErrors {
 	if err := instance.Struct(s); err != nil {
-		if e, ok := err.(*validator.InvalidValidationError); ok {
-			panic(e)
-		}
-
 		return err.(validator.ValidationErrors)
 	}
 

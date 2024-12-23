@@ -7,7 +7,7 @@ import (
 )
 
 func ruleUsername(fl validator.FieldLevel) bool {
-	return regexp.MustCompile(`^[a-z0-9]{3,}$`).Match([]byte(fl.Field().String()))
+	return regexp.MustCompile(`^[a-z0-9]+$`).Match([]byte(fl.Field().String()))
 }
 
 func rulePassword(fl validator.FieldLevel) bool {

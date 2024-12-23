@@ -1,12 +1,13 @@
 package validate
 
-import "github.com/go-playground/validator/v10"
+import (
+	"reflect"
+	"strings"
 
-var instance *validator.Validate
+	"github.com/go-playground/validator/v10"
+)
 
-func New() {
-	instance = register(validator.New())
-}
+var instance *validator.Validate = register(validator.New())
 
 func Struct(s any) error {
 	var errors []ParamError
@@ -21,6 +22,16 @@ func Struct(s any) error {
 func register(v *validator.Validate) *validator.Validate {
 	v.RegisterValidation("username", ruleUsername)
 	v.RegisterValidation("password", rulePassword)
+
+	v.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+
+		if name == "-" {
+			return ""
+		}
+
+		return name
+	})
 
 	return v
 }
