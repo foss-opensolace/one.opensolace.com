@@ -30,6 +30,7 @@ func Logger() fiber.Handler {
 [${green}Request ID${reset}]: ${respHeader:X-Request-ID}
 
 [${red}Latency${reset}]: ${latency}
+[${red}Error${reset}]:   ${locals:err}
 
 [${blue}API KEY${reset}]: ${black}${reqHeader:X-API-KEY}${reset}
 [${blue}Request Body${reset}]:

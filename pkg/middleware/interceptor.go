@@ -58,14 +58,16 @@ func Interceptor() fiber.Handler {
 		}
 
 		if err != nil {
-			if e, ok := err.(*fiber.Error); ok {
-				response.Exception = e.Message
+			response.Exception = err.Error()
 
+			if e, ok := err.(*fiber.Error); ok {
 				code = e.Code
 				c.Status(e.Code)
 			} else {
 				c.Status(fiber.StatusInternalServerError)
 			}
+
+			c.Locals("err", err.Error())
 		}
 
 		response.Status = code
