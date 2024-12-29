@@ -18,6 +18,10 @@ func New() {
 
 	db.Logger = logger.Discard
 
+	if err := db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`).Error; err != nil {
+		panic(err)
+	}
+
 	if err := migrate(db); err != nil {
 		panic(err)
 	}
@@ -27,6 +31,9 @@ func New() {
 
 func migrate(db *gorm.DB) error {
 	models := []any{
+		model.APIKey{},
+		model.APIKeyPermissions{},
+
 		model.User{},
 	}
 
