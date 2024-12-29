@@ -6,7 +6,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/bytedance/sonic"
 	"github.com/foss-opensolace/api.opensolace.com/internal/api/controller"
 	"github.com/foss-opensolace/api.opensolace.com/internal/config"
 	"github.com/foss-opensolace/api.opensolace.com/pkg/middleware"
@@ -21,8 +20,6 @@ func New() {
 	app := server{instance: fiber.New(fiber.Config{
 		Immutable:   true,
 		Prefork:     true,
-		JSONEncoder: sonic.Marshal,
-		JSONDecoder: sonic.Unmarshal,
 	})}
 	app.loadMiddlewares()
 	controller.New(app.instance)

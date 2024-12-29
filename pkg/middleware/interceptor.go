@@ -1,13 +1,13 @@
 package middleware
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/bytedance/sonic"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -33,9 +33,9 @@ func Interceptor() fiber.Handler {
 
 		response.Status = c.Response().StatusCode()
 
-		var parsedData interface{}
-		if err := sonic.Unmarshal(originalBody, &parsedData); err == nil {
-			response.Data = parsedData
+		var parsedData any
+		if err := json.Unmarshal(originalBody, &parsedData); err == nil {
+			response.Data = &parsedData
 		} else {
 			if len(originalBody) > 0 {
 				bodyString := string(originalBody)
