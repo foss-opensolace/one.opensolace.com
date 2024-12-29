@@ -15,7 +15,7 @@ type Response struct {
 	Data      any    `json:"data"`
 	Exception any    `json:"exception"`
 	RequestID string `json:"requestId"`
-	Time      string `json:"time"`
+	IssuedAt  string `json:"issued_at"`
 	Status    int    `json:"status"`
 }
 
@@ -28,7 +28,7 @@ func Interceptor() fiber.Handler {
 
 		response := Response{
 			RequestID: requestID,
-			Time:      time.Now().Format(time.RFC3339),
+			IssuedAt:  time.Now().Format(time.RFC3339),
 		}
 
 		response.Status = c.Response().StatusCode()
