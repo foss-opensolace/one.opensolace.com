@@ -2,6 +2,7 @@ package validate
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/hashicorp/go-multierror"
@@ -26,9 +27,17 @@ func toParamError(fe validator.FieldError) ParamError {
 	case "eqfield":
 		msg = fmt.Sprintf("Doesn't match %s", fe.Param())
 	case "min":
-		msg = fmt.Sprintf("%s characters minimum", fe.Param())
+		if strings.Contains(fe.Type().String(), "int") {
+			msg = fmt.Sprintf("Must be at least %s", fe.Param())
+		} else {
+			msg = fmt.Sprintf("%s characters minimum", fe.Param())
+		}
 	case "max":
-		msg = fmt.Sprintf("%s characters maximum", fe.Param())
+		if strings.Contains(fe.Type().String(), "int") {
+			msg = fmt.Sprintf("Must be at most %s", fe.Param())
+		} else {
+			msg = fmt.Sprintf("%s characters maximum", fe.Param())
+		}
 	case "username":
 		msg = "Usernames must be composed of lowercase alphanumerical characters"
 	case "email":
