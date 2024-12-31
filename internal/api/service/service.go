@@ -6,9 +6,13 @@ import (
 )
 
 var (
-	User repository.UserRepository
+	APIKey repository.APIKeyRepository
+	User   repository.UserRepository
 )
 
 func New() {
-	User = repository.NewUserRepository(db.Postgres)
+	db := db.Postgres
+
+	APIKey = repository.NewAPIKeyRepository(db)
+	User = repository.NewUserRepository(db)
 }
