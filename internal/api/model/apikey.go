@@ -16,7 +16,7 @@ type APIKey struct {
 	OwnerID *uint
 
 	TimesUsed uint `gorm:"default:0"`
-	MaxUsage  *uint
+	MaxUsage  *int
 
 	ExpirationDate *time.Time
 	RevokeReason   *string
