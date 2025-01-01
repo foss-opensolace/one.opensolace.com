@@ -13,6 +13,10 @@ type apiKeyRepository struct {
 
 type APIKeyRepository interface {
 	Create(registerOptions ...dto.APIKeyCreate) (*dto.APIKeyLookup, error)
+
+	GetByKey(key string) (*dto.APIKeyLookup, error)
+
+	RegisterUseKey(key string) error
 }
 
 func NewAPIKeyRepository(postgres *gorm.DB) APIKeyRepository {
@@ -62,7 +66,6 @@ func (a *apiKeyRepository) Create(registerOptions ...dto.APIKeyCreate) (*dto.API
 	transaction := a.db.Begin()
 
 	var apiKey model.APIKey
-	var apiKeyLookup dto.APIKeyLookup
 	var options dto.APIKeyCreate
 
 	if len(registerOptions) > 0 {
@@ -149,7 +152,8 @@ func (a *apiKeyRepository) Create(registerOptions ...dto.APIKeyCreate) (*dto.API
 		return nil, err
 	}
 
-	if err := a.baseFetchQuery().Where("ak.id = ?", apiKey.ID).Scan(&apiKeyLookup).Error; err != nil {
+	apiKeyLookup, err := a.GetByKey(apiKey.Key.String())
+	if err != nil {
 		return nil, err
 	}
 
@@ -157,5 +161,19 @@ func (a *apiKeyRepository) Create(registerOptions ...dto.APIKeyCreate) (*dto.API
 		apiKeyLookup.Owner = nil
 	}
 
+	return apiKeyLookup, nil
+}
+
+func (a *apiKeyRepository) GetByKey(key string) (*dto.APIKeyLookup, error) {
+	var apiKeyLookup dto.APIKeyLookup
+
+	if err := a.baseFetchQuery().Where("ak.key = ?", key).Scan(&apiKeyLookup).Error; err != nil {
+		return nil, err
+	}
+
 	return &apiKeyLookup, nil
+}
+
+func (a *apiKeyRepository) RegisterUseKey(key string) error {
+	return a.db.Model(&model.APIKey{}).Where("key = ?", key).Update("times_used", gorm.Expr("times_used + ?", 1)).Error
 }

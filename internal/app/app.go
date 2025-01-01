@@ -18,8 +18,8 @@ type server struct {
 
 func New() {
 	app := server{instance: fiber.New(fiber.Config{
-		Immutable:   true,
-		Prefork:     true,
+		Immutable: true,
+		Prefork:   true,
 	})}
 	app.loadMiddlewares()
 	controller.New(app.instance)
@@ -33,6 +33,7 @@ func (s *server) loadMiddlewares() {
 		middleware.CORS(),
 		middleware.Helmet(),
 		middleware.Logger(),
+		middleware.ValidateKey(),
 		middleware.Interceptor(),
 	)
 }

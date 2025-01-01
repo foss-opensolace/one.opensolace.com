@@ -26,6 +26,35 @@ func New() {
 		panic(err)
 	}
 
+	var apiKeys int64
+	if err := db.Model(&model.APIKey{}).Count(&apiKeys).Error; err != nil {
+		panic(err)
+	}
+
+	if apiKeys == 0 {
+		apiKey := &model.APIKey{
+			Description: "Main service API key",
+		}
+
+		db.Create(apiKey)
+		db.Create(&model.APIKeyPermissions{
+			KeyID:            apiKey.ID,
+			KeyAssign:        true,
+			KeyCreate:        true,
+			KeyRead:          true,
+			KeyUpdate:        true,
+			KeyRevoke:        true,
+			KeyDelete:        true,
+			Health:           true,
+			Metrics:          true,
+			UserAuthLogin:    true,
+			UserAuthRegister: true,
+			UserUpdate:       true,
+			UserRead:         true,
+			UserDelete:       true,
+		})
+	}
+
 	Postgres = db
 }
 
