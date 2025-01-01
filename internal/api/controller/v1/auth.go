@@ -6,6 +6,8 @@ import (
 	"github.com/foss-opensolace/api.opensolace.com/internal/api/model/dto"
 	"github.com/foss-opensolace/api.opensolace.com/internal/api/service"
 	"github.com/foss-opensolace/api.opensolace.com/pkg/jwt"
+	"github.com/foss-opensolace/api.opensolace.com/pkg/middleware"
+	"github.com/foss-opensolace/api.opensolace.com/pkg/utils"
 	"github.com/foss-opensolace/api.opensolace.com/pkg/validate"
 	"github.com/gofiber/fiber/v2"
 	"github.com/hashicorp/go-multierror"
@@ -15,8 +17,8 @@ import (
 func NewAuthRouter(router fiber.Router) {
 	group := router.Group("/auth")
 
-	group.Post("/register", authRegisterHandler())
-	group.Post("/login", authLoginHandler())
+	group.Post("/register", middleware.KeyPermission(dto.APIKeyPermissions{UserAuthRegister: utils.ToPtr(true)}), authRegisterHandler())
+	group.Post("/login", middleware.KeyPermission(dto.APIKeyPermissions{UserAuthLogin: utils.ToPtr(true)}), authLoginHandler())
 }
 
 func authRegisterHandler() fiber.Handler {

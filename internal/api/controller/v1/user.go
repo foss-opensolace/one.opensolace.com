@@ -4,7 +4,10 @@ import (
 	"errors"
 	"strconv"
 
+	"github.com/foss-opensolace/api.opensolace.com/internal/api/model/dto"
 	"github.com/foss-opensolace/api.opensolace.com/internal/api/service"
+	"github.com/foss-opensolace/api.opensolace.com/pkg/middleware"
+	"github.com/foss-opensolace/api.opensolace.com/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -12,8 +15,8 @@ import (
 func NewUserRouter(router fiber.Router) {
 	group := router.Group("/user")
 
-	group.Get(`/id/:id`, userGetOneByIdHandler())
-	group.Get("/:username", userGetOneByUsernameHandler())
+	group.Get(`/id/:id`, middleware.KeyPermission(dto.APIKeyPermissions{UserRead: utils.ToPtr(true)}), userGetOneByIdHandler())
+	group.Get("/:username", middleware.KeyPermission(dto.APIKeyPermissions{UserRead: utils.ToPtr(true)}), userGetOneByUsernameHandler())
 }
 
 func userGetOneByIdHandler() fiber.Handler {
