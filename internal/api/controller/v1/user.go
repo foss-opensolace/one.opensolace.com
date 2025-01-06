@@ -6,6 +6,7 @@ import (
 
 	"github.com/foss-opensolace/api.opensolace.com/internal/api/model/dto"
 	"github.com/foss-opensolace/api.opensolace.com/internal/api/service"
+	"github.com/foss-opensolace/api.opensolace.com/pkg/exception"
 	"github.com/foss-opensolace/api.opensolace.com/pkg/middleware"
 	"github.com/foss-opensolace/api.opensolace.com/pkg/utils"
 	"github.com/gofiber/fiber/v2"
@@ -25,12 +26,14 @@ func userGetOneByIdHandler() fiber.Handler {
 
 		value, err := strconv.ParseUint(userID, 10, 0)
 		if err != nil {
+			exception.SetID(c, exception.InvalidFieldType)
 			return c.Status(fiber.StatusBadRequest).SendString("Invalid id provided")
 		}
 
 		user, err := service.User.GetById(uint(value))
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
+				exception.SetID(c, exception.UserNotFound)
 				return c.Status(fiber.StatusNotFound).SendString("User not found with that ID")
 			}
 
@@ -48,6 +51,7 @@ func userGetOneByUsernameHandler() fiber.Handler {
 		user, err := service.User.GetByUsername(username)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
+				exception.SetID(c, exception.UserNotFound)
 				return c.Status(fiber.StatusNotFound).SendString("User not found with that username")
 			}
 

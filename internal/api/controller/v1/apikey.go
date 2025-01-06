@@ -1,16 +1,11 @@
 package v1
 
 import (
-	"encoding/json"
-	"time"
-
 	"github.com/foss-opensolace/api.opensolace.com/internal/api/model/dto"
 	"github.com/foss-opensolace/api.opensolace.com/internal/api/service"
 	"github.com/foss-opensolace/api.opensolace.com/pkg/middleware"
 	"github.com/foss-opensolace/api.opensolace.com/pkg/utils"
-	"github.com/foss-opensolace/api.opensolace.com/pkg/validate"
 	"github.com/gofiber/fiber/v2"
-	"github.com/hashicorp/go-multierror"
 )
 
 func NewAPIKeyRouter(router fiber.Router) {
@@ -23,24 +18,8 @@ func keyGenerateHandler() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var body dto.APIKeyCreate
 
-		if err := c.BodyParser(&body); err != nil {
-			if e, ok := err.(*json.UnmarshalTypeError); ok {
-				return c.Status(fiber.StatusBadRequest).SendString("Cannot use " + e.Value + " from '" + e.Field + "' as a value of type " + e.Type.String())
-			}
-
-			if e, ok := err.(*time.ParseError); ok {
-				return c.Status(fiber.StatusBadRequest).SendString("Couldn't parse " + e.Value + ". Expected layout: " + e.Layout)
-			}
-
+		if err := utils.ParseBody(c, &body); err != nil {
 			return err
-		}
-
-		if err := validate.Struct(&body); err != nil {
-			if errs, ok := err.(*multierror.Error); ok {
-				return c.Status(fiber.StatusBadRequest).JSON(errs.Errors)
-			}
-
-			return fiber.ErrInternalServerError
 		}
 
 		key, err := service.APIKey.Create(body)
