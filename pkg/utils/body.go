@@ -25,7 +25,7 @@ func ParseBody(c *fiber.Ctx, out any) error {
 		return err
 	}
 
-	if err := validate.Struct(&out); err != nil {
+	if err := validate.Struct(out); err != nil {
 		if errs, ok := err.(*multierror.Error); ok {
 			return c.Status(fiber.StatusBadRequest).JSON(errs.Errors)
 		}
