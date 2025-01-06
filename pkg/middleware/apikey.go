@@ -6,6 +6,7 @@ import (
 
 	"github.com/foss-opensolace/api.opensolace.com/internal/api/model/dto"
 	"github.com/foss-opensolace/api.opensolace.com/internal/api/service"
+	"github.com/foss-opensolace/api.opensolace.com/pkg/exception"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -14,16 +15,20 @@ func ValidateKey() fiber.Handler {
 		key := c.Get("X-API-KEY")
 
 		if key == "" {
+			exception.SetID(c, exception.MissingAPIKeyHeader)
 			return c.Status(fiber.StatusUnauthorized).SendString("No API key header present (X-API-KEY)")
 		}
 
 		apiKey, err := service.APIKey.GetByKey(key)
 		if err != nil {
+			exception.SetID(c, exception.InvalidAPIKey)
 			return c.Status(fiber.StatusUnauthorized).SendString("API key not found")
 		}
 
-		if !apiKey.CanUse {
-			if apiKey.MaxUsage != nil && apiKey.TimesUsed < *apiKey.MaxUsage {
+		if apiKey.CanUse == false {
+			exception.SetID(c, exception.CannotUseAPIKey)
+
+			if apiKey.MaxUsage != nil && apiKey.TimesUsed >= *apiKey.MaxUsage {
 				return c.Status(fiber.StatusUnauthorized).SendString(fmt.Sprintf("API key limit reached: %d/%d", apiKey.TimesUsed, *apiKey.MaxUsage))
 			}
 

@@ -33,8 +33,8 @@ func (s *server) loadMiddlewares() {
 		middleware.CORS(),
 		middleware.Helmet(),
 		middleware.Logger(),
-		middleware.ValidateKey(),
 		middleware.Interceptor(),
+		middleware.ValidateKey(),
 	)
 }
 

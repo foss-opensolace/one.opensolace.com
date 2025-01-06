@@ -8,15 +8,18 @@ import (
 	"strings"
 	"time"
 
+	"github.com/foss-opensolace/api.opensolace.com/pkg/exception"
+	"github.com/foss-opensolace/api.opensolace.com/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
 type Response struct {
-	Data      any    `json:"data"`
-	Exception any    `json:"exception"`
-	RequestID string `json:"requestId"`
-	IssuedAt  string `json:"issued_at"`
-	Status    int    `json:"status"`
+	Data        any                  `json:"data"`
+	Exception   any                  `json:"exception"`
+	ExceptionID *exception.Exception `json:"exception_id"`
+	RequestID   string               `json:"request_id"`
+	IssuedAt    string               `json:"issued_at"`
+	Status      int                  `json:"status"`
 }
 
 func Interceptor() fiber.Handler {
@@ -27,8 +30,9 @@ func Interceptor() fiber.Handler {
 		requestID := c.GetRespHeader(fiber.HeaderXRequestID)
 
 		response := Response{
-			RequestID: requestID,
-			IssuedAt:  time.Now().Format(time.RFC3339),
+			RequestID:   requestID,
+			ExceptionID: exception.GetID(c),
+			IssuedAt:    time.Now().Format(time.RFC3339),
 		}
 
 		response.Status = c.Response().StatusCode()
@@ -57,6 +61,10 @@ func Interceptor() fiber.Handler {
 		if response.Status > 399 {
 			response.Exception = response.Data
 			response.Data = nil
+
+			if response.ExceptionID == nil {
+				response.ExceptionID = utils.ToPtr(exception.Unknown)
+			}
 		}
 
 		if err != nil {
@@ -86,7 +94,7 @@ func Interceptor() fiber.Handler {
 	}
 }
 
-func parseNumber(input string) (interface{}, error) {
+func parseNumber(input string) (any, error) {
 	if intValue, err := strconv.ParseInt(input, 10, 64); err == nil {
 		return intValue, nil
 	}
