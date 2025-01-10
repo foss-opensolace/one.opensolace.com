@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 	"path/filepath"
 
@@ -9,7 +10,7 @@ import (
 
 func New() {
 	if err := godotenv.Load(); err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	if err := loadRouter(); err != nil {
