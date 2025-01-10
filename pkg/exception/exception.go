@@ -8,6 +8,10 @@ var exceptionIdTag = "exception_id"
 
 type Exception uint16
 
+func (e Exception) Ptr() *Exception {
+	return &e
+}
+
 /*
 Errors explained:
 
@@ -18,7 +22,11 @@ X - Unknown (0) | Non-Critical (1) | Critical (2);
 Z - Error code
 */
 const (
-	IdUnknown Exception = 1000
+	IdUnknown Exception = 1001
+
+	IdRouteError  Exception = 2101
+	IdServerError Exception = 2201
+	IdDBError     Exception = 2202
 
 	IdGenericNotFound Exception = 3101
 
