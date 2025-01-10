@@ -11,6 +11,7 @@ import (
 	"github.com/foss-opensolace/api.opensolace.com/pkg/exception"
 	"github.com/foss-opensolace/api.opensolace.com/pkg/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/hashicorp/go-multierror"
 )
 
 type Response struct {
@@ -58,32 +59,45 @@ func Interceptor() fiber.Handler {
 			}
 		}
 
+		if err != nil {
+			response.Data = err.Error()
+
+			if e, ok := err.(*fiber.Error); ok {
+				if errors.Is(err, fiber.ErrUnprocessableEntity) {
+					response.Data = "No body found when expected"
+				}
+
+				response.Status = e.Code
+			} else if e, ok := err.(exception.FieldTypeError); ok {
+				response.ExceptionID = utils.ToPtr(exception.IdInvalidFieldType)
+				response.Data = e.Error()
+
+				response.Status = fiber.StatusBadRequest
+			} else if e, ok := err.(exception.FieldLayoutError); ok {
+				response.ExceptionID = utils.ToPtr(exception.IdInvalidFieldLayout)
+				response.Data = e.Error()
+
+				response.Status = fiber.StatusBadRequest
+			} else if e, ok := err.(*multierror.Error); ok {
+				response.ExceptionID = utils.ToPtr(exception.IdOneOrManyValidation)
+				response.Data = e.Errors
+
+				response.Status = fiber.StatusBadRequest
+			} else if strings.Contains(err.Error(), "input json is empty") {
+				response.Data = "No body found when expected"
+
+				response.Status = fiber.StatusBadRequest
+			} else {
+				response.Status = fiber.StatusInternalServerError
+			}
+		}
+
 		if response.Status > 399 {
 			response.Exception = response.Data
 			response.Data = nil
 
 			if response.ExceptionID == nil {
-				response.ExceptionID = utils.ToPtr(exception.Unknown)
-			}
-		}
-
-		if err != nil {
-			response.Exception = err.Error()
-
-			if e, ok := err.(*fiber.Error); ok {
-				if errors.Is(err, fiber.ErrUnprocessableEntity) {
-					response.Exception = "No body found when expected"
-				}
-
-				response.Status = e.Code
-			} else {
-				if strings.Contains(err.Error(), "input json is empty") {
-					response.Exception = "No body found when expected"
-
-					response.Status = fiber.StatusUnprocessableEntity
-				} else {
-					response.Status = fiber.StatusInternalServerError
-				}
+				response.ExceptionID = utils.ToPtr(exception.IdUnknown)
 			}
 		}
 

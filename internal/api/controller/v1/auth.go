@@ -31,7 +31,7 @@ func authRegisterHandler() fiber.Handler {
 		user, err := service.User.Create(&body)
 		if err != nil {
 			if errors.Is(err, gorm.ErrDuplicatedKey) {
-				exception.SetID(c, exception.AuthDuplicated)
+				exception.SetID(c, exception.IdAuthDuplicated)
 				return c.Status(fiber.StatusConflict).SendString("A user with that username or email already exists")
 			}
 
@@ -57,7 +57,7 @@ func authLoginHandler() fiber.Handler {
 
 		user, err := service.User.GetByLoginAndPassword(body.Login, body.Password)
 		if err != nil {
-			exception.SetID(c, exception.AuthInvalidCredentials)
+			exception.SetID(c, exception.IdAuthInvalidCredentials)
 			return c.Status(fiber.StatusUnauthorized).SendString("Username, email or password are incorrect or doesn't exist")
 		}
 

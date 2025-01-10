@@ -26,14 +26,14 @@ func userGetOneByIdHandler() fiber.Handler {
 
 		value, err := strconv.ParseUint(userID, 10, 0)
 		if err != nil {
-			exception.SetID(c, exception.InvalidFieldType)
+			exception.SetID(c, exception.IdInvalidFieldType)
 			return c.Status(fiber.StatusBadRequest).SendString("Invalid id provided")
 		}
 
 		user, err := service.User.GetById(uint(value))
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
-				exception.SetID(c, exception.GenericNotFound)
+				exception.SetID(c, exception.IdGenericNotFound)
 				return c.Status(fiber.StatusNotFound).SendString("User not found with that ID")
 			}
 
@@ -51,7 +51,7 @@ func userGetOneByUsernameHandler() fiber.Handler {
 		user, err := service.User.GetByUsername(username)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
-				exception.SetID(c, exception.GenericNotFound)
+				exception.SetID(c, exception.IdGenericNotFound)
 				return c.Status(fiber.StatusNotFound).SendString("User not found with that username")
 			}
 

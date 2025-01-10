@@ -18,21 +18,21 @@ X - Unknown (0) | Non-Critical (1) | Critical (2);
 Z - Error code
 */
 const (
-	Unknown Exception = 1000
+	IdUnknown Exception = 1000
 
-	GenericNotFound Exception = 3101
+	IdGenericNotFound Exception = 3101
 
-	OneOrManyValidation Exception = 4101 /* Example: Expected: n >= 1 | Error: 0 */
-	InvalidFieldType    Exception = 4102 /* Example: Expected: 1 | Error: "1" */
-	InvalidFieldLayout  Exception = 4103 /* Example: Expected: "2006-10-20" | Error: "2006-20-10" */
+	IdOneOrManyValidation Exception = 4101 /* Example: Expected: n >= 1 | Error: 0 */
+	IdInvalidFieldType    Exception = 4102 /* Example: Expected: 1 | Error: "1" */
+	IdInvalidFieldLayout  Exception = 4103 /* Example: Expected: "2006-10-20" | Error: "2006-20-10" */
 
-	AuthInvalidCredentials Exception = 5101
-	AuthDuplicated         Exception = 5201
+	IdAuthInvalidCredentials Exception = 5101
+	IdAuthDuplicated         Exception = 5201
 
-	MissingAPIKeyHeader     Exception = 6101
-	InvalidAPIKey           Exception = 6102
-	CannotUseAPIKey         Exception = 6103
-	APIKeyMissingPermission Exception = 6104
+	IdMissingAPIKeyHeader     Exception = 6101
+	IdInvalidAPIKey           Exception = 6102
+	IdCannotUseAPIKey         Exception = 6103
+	IdAPIKeyMissingPermission Exception = 6104
 )
 
 func GetID(c *fiber.Ctx) *Exception {

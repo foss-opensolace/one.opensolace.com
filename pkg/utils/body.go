@@ -13,13 +13,11 @@ import (
 func ParseBody(c *fiber.Ctx, out any) error {
 	if err := c.BodyParser(&out); err != nil {
 		if e, ok := err.(*json.UnmarshalTypeError); ok {
-			exception.SetID(c, exception.InvalidFieldType)
-			return c.Status(fiber.StatusBadRequest).SendString("Cannot use " + e.Value + " from '" + e.Field + "' as a value of type " + e.Type.String())
+			return exception.FieldTypeError{Value: e.Value, Field: e.Field, Type: e.Type.String()}
 		}
 
 		if e, ok := err.(*time.ParseError); ok {
-			exception.SetID(c, exception.InvalidFieldLayout)
-			return c.Status(fiber.StatusBadRequest).SendString("Couldn't parse " + e.Value + ". Expected layout: " + e.Layout)
+			return exception.FieldLayoutError{Value: e.Value, Layout: e.Layout}
 		}
 
 		return err
@@ -27,10 +25,10 @@ func ParseBody(c *fiber.Ctx, out any) error {
 
 	if err := validate.Struct(out); err != nil {
 		if errs, ok := err.(*multierror.Error); ok {
-			return c.Status(fiber.StatusBadRequest).JSON(errs.Errors)
+			return errs
 		}
 
-		return fiber.ErrInternalServerError
+		return err
 	}
 
 	return nil

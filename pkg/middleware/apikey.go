@@ -15,18 +15,18 @@ func ValidateKey() fiber.Handler {
 		key := c.Get("X-API-KEY")
 
 		if key == "" {
-			exception.SetID(c, exception.MissingAPIKeyHeader)
+			exception.SetID(c, exception.IdMissingAPIKeyHeader)
 			return c.Status(fiber.StatusUnauthorized).SendString("No API key header present (X-API-KEY)")
 		}
 
 		apiKey, err := service.APIKey.GetByKey(key)
 		if err != nil {
-			exception.SetID(c, exception.InvalidAPIKey)
+			exception.SetID(c, exception.IdInvalidAPIKey)
 			return c.Status(fiber.StatusUnauthorized).SendString("API key not found")
 		}
 
 		if apiKey.CanUse == false {
-			exception.SetID(c, exception.CannotUseAPIKey)
+			exception.SetID(c, exception.IdCannotUseAPIKey)
 
 			if apiKey.MaxUsage != nil && apiKey.TimesUsed >= *apiKey.MaxUsage {
 				return c.Status(fiber.StatusUnauthorized).SendString(fmt.Sprintf("API key limit reached: %d/%d", apiKey.TimesUsed, *apiKey.MaxUsage))
