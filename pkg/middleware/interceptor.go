@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/foss-opensolace/api.opensolace.com/pkg/exception"
-	"github.com/foss-opensolace/api.opensolace.com/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/hashicorp/go-multierror"
 )
@@ -70,17 +69,17 @@ func Interceptor() fiber.Handler {
 
 				response.Status = e.Code
 			} else if e, ok := err.(exception.FieldTypeError); ok {
-				response.ExceptionID = utils.ToPtr(exception.IdInvalidFieldType)
+				response.ExceptionID = exception.IdInvalidFieldType.Ptr()
 				response.Data = e.Error()
 
 				response.Status = fiber.StatusBadRequest
 			} else if e, ok := err.(exception.FieldLayoutError); ok {
-				response.ExceptionID = utils.ToPtr(exception.IdInvalidFieldLayout)
+				response.ExceptionID = exception.IdInvalidFieldLayout.Ptr()
 				response.Data = e.Error()
 
 				response.Status = fiber.StatusBadRequest
 			} else if e, ok := err.(*multierror.Error); ok {
-				response.ExceptionID = utils.ToPtr(exception.IdOneOrManyValidation)
+				response.ExceptionID = exception.IdOneOrManyValidation.Ptr()
 				response.Data = e.Errors
 
 				response.Status = fiber.StatusBadRequest
@@ -92,10 +91,10 @@ func Interceptor() fiber.Handler {
 				response.Status = fiber.StatusInternalServerError
 
 				if strings.Contains("gorm", reflect.TypeOf(err).Name()) {
-					response.ExceptionID = utils.ToPtr(exception.IdDBError)
+					response.ExceptionID = exception.IdDBError.Ptr()
 					response.Data = "Database error, we are addressing this issue. Please, try again later."
 				} else {
-					response.ExceptionID = utils.ToPtr(exception.IdServerError)
+					response.ExceptionID = exception.IdServerError.Ptr()
 					response.Data = "Server error, we are addressing this issue. Please, try again later."
 				}
 			}
@@ -104,7 +103,7 @@ func Interceptor() fiber.Handler {
 		method := string(c.Request().Header.Method())
 		route := string(c.Request().URI().PathOriginal())
 		if e, ok := response.Data.(string); ok && strings.Contains(e, fmt.Sprintf("Cannot %s %s", method, route)) {
-			response.ExceptionID = utils.ToPtr(exception.IdRouteError)
+			response.ExceptionID = exception.IdRouteError.Ptr()
 			response.Data = "Couldn't find route " + route
 
 			response.Status = fiber.StatusNotFound
@@ -115,7 +114,7 @@ func Interceptor() fiber.Handler {
 			response.Data = nil
 
 			if response.ExceptionID == nil {
-				response.ExceptionID = utils.ToPtr(exception.IdUnknown)
+				response.ExceptionID = exception.IdUnknown.Ptr()
 			}
 		}
 
