@@ -20,7 +20,7 @@ func New(app *fiber.App) {
 func (c *controller) v1() {
 	router := c.instance.Group("/v1")
 
-	v1.NewMetricRouter(router.Group("/metrics"))
 	v1.NewAuthRouter(router.Group("/auth"))
+	v1.NewMetricRouter(router.Group("/metrics"))
 	v1.NewUserRouter(router.Group("/user"))
 }

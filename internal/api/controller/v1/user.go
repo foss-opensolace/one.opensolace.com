@@ -14,11 +14,11 @@ import (
 )
 
 func NewUserRouter(router fiber.Router) {
-	router.Get(`/id::id`, middleware.KeyPermission(dto.APIKeyPermissions{UserRead: utils.True}), userGetOneByIdHandler())
-	router.Get("/username::username", middleware.KeyPermission(dto.APIKeyPermissions{UserRead: utils.True}), userGetOneByUsernameHandler())
+	router.Get("/id::id", middleware.KeyPermission(dto.APIKeyPermissions{UserRead: utils.True}), handlerGetUserByID())
+	router.Get("/username::username", middleware.KeyPermission(dto.APIKeyPermissions{UserRead: utils.True}), handlerGetUserByUsername())
 }
 
-func userGetOneByIdHandler() fiber.Handler {
+func handlerGetUserByID() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		userID := c.Params("id")
 
@@ -42,7 +42,7 @@ func userGetOneByIdHandler() fiber.Handler {
 	}
 }
 
-func userGetOneByUsernameHandler() fiber.Handler {
+func handlerGetUserByUsername() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		username := c.Params("username")
 

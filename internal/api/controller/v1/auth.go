@@ -14,11 +14,11 @@ import (
 )
 
 func NewAuthRouter(router fiber.Router) {
-	router.Post("/register", middleware.KeyPermission(dto.APIKeyPermissions{UserAuthRegister: utils.True}), authRegisterHandler())
-	router.Post("/login", middleware.KeyPermission(dto.APIKeyPermissions{UserAuthLogin: utils.True}), authLoginHandler())
+	router.Post("/register", middleware.KeyPermission(dto.APIKeyPermissions{UserAuthRegister: utils.True}), handlerPostAuthRegister())
+	router.Post("/login", middleware.KeyPermission(dto.APIKeyPermissions{UserAuthLogin: utils.True}), handlerPostAuthLogin())
 }
 
-func authRegisterHandler() fiber.Handler {
+func handlerPostAuthRegister() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var body dto.UserRegister
 
@@ -45,7 +45,7 @@ func authRegisterHandler() fiber.Handler {
 	}
 }
 
-func authLoginHandler() fiber.Handler {
+func handlerPostAuthLogin() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var body dto.UserLogin
 

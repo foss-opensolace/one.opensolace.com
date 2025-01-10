@@ -9,15 +9,15 @@ import (
 )
 
 func NewMetricRouter(router fiber.Router) {
-	router.Get("", middleware.KeyPermission(dto.APIKeyPermissions{Metrics: utils.True}), metrics())
-	router.Get("/health", middleware.KeyPermission(dto.APIKeyPermissions{Health: utils.True}), health())
+	router.Get("", middleware.KeyPermission(dto.APIKeyPermissions{Metrics: utils.True}), handlerGetMetrics())
+	router.Get("/health", middleware.KeyPermission(dto.APIKeyPermissions{Health: utils.True}), handlerGetMetricsHealth())
 }
 
-func metrics() fiber.Handler {
+func handlerGetMetrics() fiber.Handler {
 	return monitor.New(monitor.Config{APIOnly: true})
 }
 
-func health() fiber.Handler {
+func handlerGetMetricsHealth() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).SendString("Systems healthy!")
 	}
