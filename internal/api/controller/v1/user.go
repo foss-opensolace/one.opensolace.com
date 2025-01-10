@@ -14,10 +14,8 @@ import (
 )
 
 func NewUserRouter(router fiber.Router) {
-	group := router.Group("/user")
-
-	group.Get(`/id/:id`, middleware.KeyPermission(dto.APIKeyPermissions{UserRead: utils.ToPtr(true)}), userGetOneByIdHandler())
-	group.Get("/:username", middleware.KeyPermission(dto.APIKeyPermissions{UserRead: utils.ToPtr(true)}), userGetOneByUsernameHandler())
+	router.Get(`/id::id`, middleware.KeyPermission(dto.APIKeyPermissions{UserRead: utils.True}), userGetOneByIdHandler())
+	router.Get("/username::username", middleware.KeyPermission(dto.APIKeyPermissions{UserRead: utils.True}), userGetOneByUsernameHandler())
 }
 
 func userGetOneByIdHandler() fiber.Handler {

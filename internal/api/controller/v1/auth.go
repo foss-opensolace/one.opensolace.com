@@ -14,10 +14,8 @@ import (
 )
 
 func NewAuthRouter(router fiber.Router) {
-	group := router.Group("/auth")
-
-	group.Post("/register", middleware.KeyPermission(dto.APIKeyPermissions{UserAuthRegister: utils.ToPtr(true)}), authRegisterHandler())
-	group.Post("/login", middleware.KeyPermission(dto.APIKeyPermissions{UserAuthLogin: utils.ToPtr(true)}), authLoginHandler())
+	router.Post("/register", middleware.KeyPermission(dto.APIKeyPermissions{UserAuthRegister: utils.True}), authRegisterHandler())
+	router.Post("/login", middleware.KeyPermission(dto.APIKeyPermissions{UserAuthLogin: utils.True}), authLoginHandler())
 }
 
 func authRegisterHandler() fiber.Handler {

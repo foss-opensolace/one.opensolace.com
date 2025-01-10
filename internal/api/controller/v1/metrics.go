@@ -9,10 +9,8 @@ import (
 )
 
 func NewMetricRouter(router fiber.Router) {
-	group := router.Group("/metrics")
-
-	group.Get("", middleware.KeyPermission(dto.APIKeyPermissions{Metrics: utils.ToPtr(true)}), metrics())
-	group.Get("/health", middleware.KeyPermission(dto.APIKeyPermissions{Health: utils.ToPtr(true)}), health())
+	router.Get("", middleware.KeyPermission(dto.APIKeyPermissions{Metrics: utils.True}), metrics())
+	router.Get("/health", middleware.KeyPermission(dto.APIKeyPermissions{Health: utils.True}), health())
 }
 
 func metrics() fiber.Handler {
