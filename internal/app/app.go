@@ -17,10 +17,7 @@ type server struct {
 }
 
 func New() {
-	app := server{instance: fiber.New(fiber.Config{
-		Immutable: true,
-		Prefork:   true,
-	})}
+	app := server{instance: fiber.New(fiber.Config{Immutable: true})}
 	app.loadMiddlewares()
 	controller.New(app.instance)
 	app.listen()
