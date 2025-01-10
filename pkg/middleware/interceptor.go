@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -89,7 +90,24 @@ func Interceptor() fiber.Handler {
 				response.Status = fiber.StatusBadRequest
 			} else {
 				response.Status = fiber.StatusInternalServerError
+
+				if strings.Contains("gorm", reflect.TypeOf(err).Name()) {
+					response.ExceptionID = utils.ToPtr(exception.IdDBError)
+					response.Data = "Database error, we are addressing this issue. Please, try again later."
+				} else {
+					response.ExceptionID = utils.ToPtr(exception.IdServerError)
+					response.Data = "Server error, we are addressing this issue. Please, try again later."
+				}
 			}
+		}
+
+		method := string(c.Request().Header.Method())
+		route := string(c.Request().URI().PathOriginal())
+		if e, ok := response.Data.(string); ok && strings.Contains(e, fmt.Sprintf("Cannot %s %s", method, route)) {
+			response.ExceptionID = utils.ToPtr(exception.IdRouteError)
+			response.Data = "Couldn't find route " + route
+
+			response.Status = fiber.StatusNotFound
 		}
 
 		if response.Status > 399 {
