@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/foss-opensolace/api.opensolace.com/internal/api/model/dto"
-	"github.com/foss-opensolace/api.opensolace.com/internal/api/service"
-	"github.com/foss-opensolace/api.opensolace.com/pkg/exception"
+	"github.com/foss-opensolace/one.opensolace.com/internal/api/model/dto"
+	"github.com/foss-opensolace/one.opensolace.com/internal/api/service"
+	"github.com/foss-opensolace/one.opensolace.com/pkg/exception"
 	"github.com/gofiber/fiber/v2"
 )
 

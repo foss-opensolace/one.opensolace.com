@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/foss-opensolace/api.opensolace.com/internal/api/model"
-	"github.com/foss-opensolace/api.opensolace.com/internal/api/model/dto"
+	"github.com/foss-opensolace/one.opensolace.com/internal/api/model"
+	"github.com/foss-opensolace/one.opensolace.com/internal/api/model/dto"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

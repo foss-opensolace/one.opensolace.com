@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/foss-opensolace/api.opensolace.com/internal/config"
+	"github.com/foss-opensolace/one.opensolace.com/internal/config"
 	"github.com/golang-jwt/jwt"
 )
 

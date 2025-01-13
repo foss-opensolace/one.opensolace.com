@@ -6,9 +6,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/foss-opensolace/api.opensolace.com/internal/api/controller"
-	"github.com/foss-opensolace/api.opensolace.com/internal/config"
-	"github.com/foss-opensolace/api.opensolace.com/pkg/middleware"
+	"github.com/foss-opensolace/one.opensolace.com/internal/api/controller"
+	"github.com/foss-opensolace/one.opensolace.com/internal/config"
+	"github.com/foss-opensolace/one.opensolace.com/pkg/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 

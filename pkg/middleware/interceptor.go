@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/foss-opensolace/api.opensolace.com/pkg/exception"
+	"github.com/foss-opensolace/one.opensolace.com/pkg/exception"
 	"github.com/gofiber/fiber/v2"
 	"github.com/hashicorp/go-multierror"
 )

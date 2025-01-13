@@ -1,7 +1,7 @@
 package controller
 
 import (
-	v1 "github.com/foss-opensolace/api.opensolace.com/internal/api/controller/v1"
+	v1 "github.com/foss-opensolace/one.opensolace.com/internal/api/controller/v1"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/foss-opensolace/api.opensolace.com/pkg/jwt"
+	"github.com/foss-opensolace/one.opensolace.com/pkg/jwt"
 	"github.com/gofiber/fiber/v2"
 )
 

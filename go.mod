@@ -1,4 +1,4 @@
-module github.com/foss-opensolace/api.opensolace.com
+module github.com/foss-opensolace/one.opensolace.com
 
 go 1.23.4
 

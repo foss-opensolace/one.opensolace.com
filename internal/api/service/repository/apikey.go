@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"github.com/foss-opensolace/api.opensolace.com/internal/api/model"
-	"github.com/foss-opensolace/api.opensolace.com/internal/api/model/dto"
-	"github.com/foss-opensolace/api.opensolace.com/pkg/utils"
+	"github.com/foss-opensolace/one.opensolace.com/internal/api/model"
+	"github.com/foss-opensolace/one.opensolace.com/internal/api/model/dto"
+	"github.com/foss-opensolace/one.opensolace.com/pkg/utils"
 	"gorm.io/gorm"
 )
 

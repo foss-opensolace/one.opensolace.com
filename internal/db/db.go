@@ -1,8 +1,8 @@
 package db
 
 import (
-	"github.com/foss-opensolace/api.opensolace.com/internal/api/model"
-	"github.com/foss-opensolace/api.opensolace.com/internal/config"
+	"github.com/foss-opensolace/one.opensolace.com/internal/api/model"
+	"github.com/foss-opensolace/one.opensolace.com/internal/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
