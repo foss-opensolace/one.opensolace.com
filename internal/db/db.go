@@ -16,6 +16,10 @@ var Postgres *gorm.DB
 var Mongo *mongo.Client
 
 func New() {
+	if err := initMongo(); err != nil {
+		panic(err)
+	}
+
 	if err := initPostgres(); err != nil {
 		panic(err)
 	}
