@@ -3,7 +3,8 @@ package config
 import "gopkg.in/yaml.v3"
 
 var DB struct {
-	ConnectionString string `yaml:"connection_string"`
+	PSQLConnectionString  string `yaml:"psql_connection_string"`
+	MongoConnectionString string `yaml:"mongo_connection_string"`
 }
 
 func loadDB() error {

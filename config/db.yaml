@@ -1,1 +1,2 @@
-connection_string: ${POSTGRES_URL}
+psql_connection_string: ${POSTGRES_URL}
+mongo_connection_string: ${MONGODB_URL}
